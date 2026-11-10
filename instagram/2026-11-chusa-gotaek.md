@@ -58,5 +58,5 @@
 ---
 
 ## 게시 전 체크
-- 아이들 얼굴은 스마일 스티커로 가린 사진을 사용하세요: `photos/chusa_kids_sticker.jpg`(3번), `photos/chusa_tree_sticker.jpg`(2번)
+- 아이들 얼굴은 스마일 스티커로 가린 사진을 사용하세요: `photos/chusa_kids_sticker.jpg`(3번). 2번 사진은 원본 그대로 사용
 - 동원농장 예약 링크나 프로필 링크가 있다면 "프로필 링크에서 예약" 문구를 추가하면 좋아요.
