@@ -11,6 +11,7 @@
   --display:"Song Myung","Nanum Myeongjo","Batang",serif;
   --body:"Gowun Dodum","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --paper:#131411; --paper-2:#1c1d19; --ink:#ecebe3; --ink-2:#a3a59a; --line:#2e302a;
@@ -50,7 +51,9 @@ a{color:inherit}
 .actions{display:flex;flex-wrap:wrap;gap:12px}
 .btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;font-family:var(--body);font-size:16px;text-decoration:none;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
 .btn.primary{background:var(--ink);color:var(--paper)}
-.btn:hover{background:var(--ginkgo);border-color:var(--ginkgo);color:var(--on-ginkgo)}
+.btn{transition:background-color 160ms ease,border-color 160ms ease,color 160ms ease,transform 140ms var(--ease-out)}
+.btn:active{transform:scale(0.97)}
+@media (hover:hover) and (pointer:fine){.btn:hover{background:var(--ginkgo);border-color:var(--ginkgo);color:var(--on-ginkgo)}}
 
 /* 3 minutes band */
 .band{background:var(--ginkgo);color:var(--on-ginkgo);margin-left:calc(-1*max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1*max(16px,env(safe-area-inset-right,0px)))}
@@ -103,7 +106,9 @@ form{display:grid;gap:18px;background:var(--paper-2);padding:28px}
 label{display:grid;gap:6px;font-size:14px;color:var(--ink-2)}
 input,select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--paper);border:1px solid var(--line);padding:11px 12px;width:100%;border-radius:0}
 textarea{min-height:110px;resize:vertical}
-.done{background:var(--paper-2);padding:28px;display:grid;gap:16px}
+.done{background:var(--paper-2);padding:28px;display:grid;gap:16px;transition:opacity 240ms var(--ease-out),transform 240ms var(--ease-out)}
+@starting-style{.done{opacity:0;transform:translateY(8px)}}
+@media (prefers-reduced-motion:reduce){@starting-style{.done{transform:none}}}
 .done pre{font-family:var(--body);white-space:pre-wrap;background:var(--paper);border:1px solid var(--line);padding:16px;margin:0;font-size:15px}
 .done .note{color:var(--ink-2);font-size:14px}
 .ask-side{display:grid;gap:18px}
@@ -129,8 +134,14 @@ footer .brand{color:var(--ink);font-size:18px}
   .steps time{font-size:13px}
 }
 @media (prefers-reduced-motion:no-preference){
-  .route .car{animation:drive 6s ease-in-out infinite}
-  @keyframes drive{0%,10%{transform:translateX(0)}60%,100%{transform:translateX(var(--dx,380px))}}
+  .route .car{animation:drive 5s linear 3}
+  @keyframes drive{
+    0%{opacity:0;transform:translateX(0)}
+    10%{opacity:1;transform:translateX(0);animation-timing-function:cubic-bezier(0.77,0,0.175,1)}
+    60%,88%{opacity:1;transform:translateX(var(--dx,380px))}
+    100%{opacity:0;transform:translateX(var(--dx,380px))}
+  }
+  .route:hover .car{animation-play-state:paused}
 }
 </style>
 

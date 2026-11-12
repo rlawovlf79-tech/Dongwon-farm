@@ -12,6 +12,7 @@
   --display:"Song Myung","Nanum Myeongjo",serif;
   --body:"Gowun Dodum","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --paper:#131411; --paper-2:#1C1D19; --ink:#ECEBE3; --ink-2:#A3A59A; --line:#2E302A;
@@ -128,6 +129,13 @@ p{margin:0}
 .cta .btn{width:100%}
 .toast{background:var(--ink);color:var(--on-ink);font-size:14px;padding:10px 14px;border-radius:2px}
 .note{font-size:12px;color:var(--ink-2);text-align:center}
+
+/* motion: press feedback only; selections stay instant because they repeat many times per booking */
+.btn,.chip,.date,.slot,.stepper button{transition:transform 120ms var(--ease-out),background-color 160ms ease,border-color 160ms ease,color 160ms ease}
+.btn:active:not(:disabled),.chip:active,.date:active:not(:disabled),.slot:active:not(:disabled),.stepper button:active:not(:disabled){transform:scale(0.97)}
+.toast{transition:opacity 200ms var(--ease-out),transform 200ms var(--ease-out)}
+@starting-style{.toast{opacity:0;transform:translateY(4px)}}
+@media (prefers-reduced-motion:reduce){@starting-style{.toast{transform:none}}}
 
 @media (max-width:960px){
   .page{grid-template-columns:1fr}
