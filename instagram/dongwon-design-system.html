@@ -1,0 +1,304 @@
+<title>동원농원 디자인 시스템</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Song+Myung&family=Gowun+Dodum&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 왼쪽은 시스템 문서(한지 위 먹 글씨), 오른쪽은 그 시스템으로 만든 예약 홈 화면을 휴대폰 크기로 고정 */
+:root{
+  --paper:#F3F4F1; --paper-2:#E8EAE4; --ink:#1D1E1A; --ink-2:#585A52; --line:#D5D8CF;
+  --ginkgo:#F0B400; --ginkgo-soft:#FBEBB8; --on-ginkgo:#1D1E1A;
+  --seal:#B3332B; --pine:#3F6B4E; --on-ink:#F3F4F1;
+  --display:"Song Myung","Nanum Myeongjo",serif;
+  --body:"Gowun Dodum","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#131411; --paper-2:#1C1D19; --ink:#ECEBE3; --ink-2:#A3A59A; --line:#2E302A;
+  --ginkgo:#EEB000; --ginkgo-soft:#3A3114; --on-ginkgo:#1D1E1A; --seal:#CF4338; --pine:#6FA07F; --on-ink:#131411; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#131411; --paper-2:#1C1D19; --ink:#ECEBE3; --ink-2:#A3A59A; --line:#2E302A;
+  --ginkgo:#EEB000; --ginkgo-soft:#3A3114; --on-ginkgo:#1D1E1A; --seal:#CF4338; --pine:#6FA07F; --on-ink:#131411; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance}
+p{margin:0}
+:focus-visible{outline:2px solid var(--seal);outline-offset:2px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.label{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
+
+.page{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:56px;padding-block:40px 64px;align-items:start}
+.doc{display:grid;gap:56px;min-width:0}
+.doc header{display:grid;gap:12px}
+.doc header h1{font-size:clamp(34px,5vw,52px);line-height:1.2}
+.doc header p{color:var(--ink-2);max-width:36em}
+.doc section{display:grid;gap:20px;border-top:1px solid var(--ink);padding-top:18px}
+.doc h2{font-size:28px}
+.doc .lead{color:var(--ink-2);max-width:38em}
+
+/* style principles */
+.principles{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.principles li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding-block:14px;border-bottom:1px solid var(--line)}
+.principles b{font-family:var(--display);font-weight:400;font-size:19px}
+.principles span{color:var(--ink-2)}
+
+/* palette */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.sw{display:grid;gap:8px}
+.sw i{display:block;height:72px;border:1px solid var(--line)}
+.sw b{font-weight:400}
+.sw .mono{font-size:13px;color:var(--ink-2)}
+.sw small{color:var(--ink-2);font-size:13px;line-height:1.5}
+.sw.big{grid-column:span 2}
+.sw.big i{height:110px}
+
+/* type */
+.specimen{display:grid;gap:0}
+.specimen div{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;align-items:baseline;padding-block:12px;border-bottom:1px solid var(--line)}
+.specimen .mono{font-size:12px;color:var(--ink-2)}
+.fontpair{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.fontpair div{border:1px solid var(--line);padding:16px;display:grid;gap:6px;min-width:0}
+.fontpair .big{font-size:34px;line-height:1.2}
+.fontpair small{color:var(--ink-2);font-size:13px}
+
+/* tokens table */
+.tokens{overflow-x:auto}
+.tokens table{border-collapse:collapse;width:100%;font-size:14px}
+.tokens th,.tokens td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tokens th{font-weight:400;color:var(--ink-2)}
+
+/* components */
+.comps{display:grid;gap:18px}
+.comp-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+
+/* shared components (used in doc and in app) */
+.btn{font:inherit;font-size:16px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);padding:12px 20px;border-radius:2px;cursor:pointer}
+.btn.primary{background:var(--ink);color:var(--on-ink)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.chip{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:6px 14px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ginkgo);border-color:var(--ginkgo);color:var(--on-ginkgo)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:2px 10px;border-radius:999px;border:1px solid currentColor}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.pill.ok{color:var(--pine)}.pill.few{color:#9a7300}.pill.full{color:var(--seal)}
+:root .pill.few{color:color-mix(in srgb,var(--ginkgo) 55%,var(--ink))}
+.seal{display:inline-block;writing-mode:vertical-rl;background:var(--seal);color:#FBF7F2;font-family:var(--display);font-size:13px;padding:6px 4px;line-height:1.05;transform:rotate(-4deg);border-radius:2px}
+
+/* phone */
+.phone-wrap{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);display:grid;gap:12px;justify-items:center}
+.phone{width:100%;max-width:390px;border:1px solid var(--line);background:var(--paper);border-radius:28px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.12)}
+.app{display:grid;gap:22px;padding:22px 20px 0}
+.app-top{display:flex;justify-content:space-between;align-items:center}
+.app-top h3{font-size:24px;display:flex;gap:10px;align-items:center}
+.app-top .mono{font-size:12px;color:var(--ink-2)}
+.peak{background:var(--ginkgo);color:var(--on-ginkgo);padding:16px;border-radius:2px;display:grid;gap:4px}
+.peak b{font-family:var(--display);font-weight:400;font-size:20px}
+.peak span{font-size:14px}
+.blk{display:grid;gap:10px}
+.blk-h{display:flex;justify-content:space-between;align-items:baseline}
+.blk-h h4{margin:0;font-family:var(--display);font-weight:400;font-size:18px}
+.blk-h small{color:var(--ink-2);font-size:12px}
+.dates{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.date{font:inherit;display:grid;gap:2px;justify-items:center;padding:8px 0 7px;border:1px solid transparent;background:transparent;color:var(--ink);border-radius:2px;cursor:pointer}
+.date .d{font-family:var(--mono);font-size:17px}
+.date .w{font-size:11px;color:var(--ink-2)}
+.date .dot{width:5px;height:5px;border-radius:50%;background:var(--pine)}
+.date.few .dot{background:var(--ginkgo)}
+.date.full{cursor:not-allowed;opacity:.45}.date.full .dot{background:var(--seal)}
+.date.sun .w{color:var(--seal)}
+.date[aria-pressed="true"]{border-color:var(--ink);background:var(--paper-2)}
+.slots{display:grid;gap:8px}
+.slot{font:inherit;display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;padding:12px 14px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:2px;cursor:pointer}
+.slot .mono{font-size:15px}
+.slot span{font-size:14px}
+.slot small{display:block;color:var(--ink-2);font-size:12px}
+.slot[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 3px 0 0 var(--ginkgo)}
+.slot:disabled{opacity:.45;cursor:not-allowed}
+.people{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);padding:10px 14px;border-radius:2px}
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{font:inherit;width:34px;height:34px;border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:2px;cursor:pointer;font-size:18px;line-height:1}
+.stepper .mono{min-width:2ch;text-align:center;font-size:17px}
+.course{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center;border-top:1px solid var(--line);padding-top:14px}
+.course .min{font-family:var(--mono);font-size:30px;line-height:1}
+.course .min small{font-family:var(--display);font-size:14px}
+.course p{font-size:14px;color:var(--ink-2)}
+.cta{position:sticky;bottom:0;background:var(--paper);border-top:1px solid var(--line);padding:14px 20px 18px;display:grid;gap:8px;margin-top:6px}
+.cta .sum{font-size:14px;color:var(--ink-2)}
+.cta .btn{width:100%}
+.toast{background:var(--ink);color:var(--on-ink);font-size:14px;padding:10px 14px;border-radius:2px}
+.note{font-size:12px;color:var(--ink-2);text-align:center}
+
+@media (max-width:960px){
+  .page{grid-template-columns:1fr}
+  .phone-wrap{position:static;order:-1}
+}
+@media (max-width:520px){
+  .principles li,.specimen div{grid-template-columns:1fr;gap:4px}
+  .fontpair{grid-template-columns:1fr}
+  .sw.big{grid-column:auto}
+}
+</style>
+
+<div class="page">
+  <div class="doc">
+    <header>
+      <span class="label">Dongwon Nongwon · Design System v1</span>
+      <h1>동원농원 디자인 시스템</h1>
+      <p>추사고택에서 차로 3분 거리에 있는 동원농원의 방문 예약 앱을 위한 시스템이에요. 한지 위에 먹으로 쓴 것처럼 조용하게, 은행잎 노랑은 꼭 알려야 할 순간에만 써요.</p>
+    </header>
+
+    <section>
+      <span class="label">01 · Style</span>
+      <h2>스타일 방향</h2>
+      <ul class="principles">
+        <li><b>한지와 먹</b><span>배경은 살짝 푸른 기가 도는 한지색, 글씨와 주요 버튼은 먹색이에요. 그림자와 그라데이션 없이 얇은 선으로만 구분해요.</span></li>
+        <li><b>노랑은 한 곳만</b><span>은행잎 노랑은 "지금 절정" 배너와 선택된 항목에만 써요. 한 화면에 두 번 이상 넓게 쓰지 않아요.</span></li>
+        <li><b>낙관 하나</b><span>인주 빨강은 로고 낙관과 마감, 일요일 같은 경고 정보에만 써요.</span></li>
+        <li><b>숫자는 또렷하게</b><span>날짜, 시간, 인원, 거리처럼 예약에 필요한 숫자는 고정폭 서체로 맞춰 한눈에 비교되게 해요.</span></li>
+        <li><b>모서리는 거의 없이</b><span>버튼과 칸은 2px 모서리로 종이를 자른 느낌을 내요. 둥근 알약 모양은 칩과 상태 표시에만 써요.</span></li>
+      </ul>
+    </section>
+
+    <section>
+      <span class="label">02 · Color</span>
+      <h2>컬러 팔레트</h2>
+      <p class="lead">밝은 화면 기준 값이에요. 어두운 화면에서는 한지와 먹이 서로 자리를 바꾸고, 노랑은 그대로 유지해요.</p>
+      <div class="swatches">
+        <div class="sw big"><i style="background:#F3F4F1"></i><b>한지 Paper</b><span class="mono">#F3F4F1</span><small>기본 배경</small></div>
+        <div class="sw big"><i style="background:#1D1E1A"></i><b>먹 Ink</b><span class="mono">#1D1E1A</span><small>본문, 주요 버튼</small></div>
+        <div class="sw"><i style="background:#F0B400"></i><b>은행 Ginkgo</b><span class="mono">#F0B400</span><small>절정 배너, 선택 상태</small></div>
+        <div class="sw"><i style="background:#B3332B"></i><b>인주 Seal</b><span class="mono">#B3332B</span><small>낙관, 마감, 일요일</small></div>
+        <div class="sw"><i style="background:#3F6B4E"></i><b>솔 Pine</b><span class="mono">#3F6B4E</span><small>예약 가능</small></div>
+        <div class="sw"><i style="background:#E8EAE4"></i><b>한지 2</b><span class="mono">#E8EAE4</span><small>입력칸, 선택 배경</small></div>
+        <div class="sw"><i style="background:#585A52"></i><b>먹 2</b><span class="mono">#585A52</span><small>보조 글씨</small></div>
+        <div class="sw"><i style="background:#D5D8CF"></i><b>선 Line</b><span class="mono">#D5D8CF</span><small>구분선, 테두리</small></div>
+      </div>
+      <div class="tokens">
+        <table>
+          <tr><th>역할</th><th>밝은 화면</th><th>어두운 화면</th></tr>
+          <tr><td>배경</td><td class="mono">#F3F4F1</td><td class="mono">#131411</td></tr>
+          <tr><td>글씨</td><td class="mono">#1D1E1A</td><td class="mono">#ECEBE3</td></tr>
+          <tr><td>보조 글씨</td><td class="mono">#585A52</td><td class="mono">#A3A59A</td></tr>
+          <tr><td>강조</td><td class="mono">#F0B400</td><td class="mono">#EEB000</td></tr>
+          <tr><td>경고·마감</td><td class="mono">#B3332B</td><td class="mono">#CF4338</td></tr>
+          <tr><td>가능</td><td class="mono">#3F6B4E</td><td class="mono">#6FA07F</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <span class="label">03 · Type</span>
+      <h2>제목·본문 폰트 조합</h2>
+      <div class="fontpair">
+        <div><span class="label">제목</span><span class="big" style="font-family:var(--display)">송명</span><small>Song Myung · 붓맛이 남은 명조. 화면 제목과 섹션 이름에만</small></div>
+        <div><span class="label">본문</span><span class="big" style="font-family:var(--body)">고운돋움</span><small>Gowun Dodum · 부드러운 고딕. 설명, 버튼, 입력</small></div>
+        <div><span class="label">숫자</span><span class="big mono">14:00</span><small>IBM Plex Mono · 날짜, 시간, 인원, 거리</small></div>
+      </div>
+      <div class="specimen">
+        <div><span class="mono">제목 L · 32</span><span style="font-family:var(--display);font-size:32px;line-height:1.25">추사고택 가을 반나절</span></div>
+        <div><span class="mono">제목 M · 24</span><span style="font-family:var(--display);font-size:24px">방문 날짜 고르기</span></div>
+        <div><span class="mono">제목 S · 18</span><span style="font-family:var(--display);font-size:18px">시간</span></div>
+        <div><span class="mono">본문 · 16</span><span>은행잎은 오후 햇살을 받을 때 가장 반짝여요.</span></div>
+        <div><span class="mono">보조 · 13</span><span style="font-size:13px;color:var(--ink-2)">남은 자리 4팀</span></div>
+        <div><span class="mono">숫자 · 17</span><span class="mono" style="font-size:17px">11.14 SAT · 14:00 · 2명</span></div>
+      </div>
+    </section>
+
+    <section>
+      <span class="label">04 · Tokens</span>
+      <h2>간격과 모서리</h2>
+      <div class="tokens">
+        <table>
+          <tr><th>토큰</th><th>값</th><th>쓰는 곳</th></tr>
+          <tr><td class="mono">space-1 ~ 7</td><td class="mono">4 · 8 · 12 · 16 · 24 · 32 · 48</td><td>4px 단위로만</td></tr>
+          <tr><td class="mono">radius-paper</td><td class="mono">2px</td><td>버튼, 입력칸, 카드</td></tr>
+          <tr><td class="mono">radius-pill</td><td class="mono">999px</td><td>칩, 상태 표시</td></tr>
+          <tr><td class="mono">line</td><td class="mono">1px · Line</td><td>구분선, 테두리</td></tr>
+          <tr><td class="mono">touch</td><td class="mono">최소 44px</td><td>누를 수 있는 모든 요소</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <span class="label">05 · Components</span>
+      <h2>기본 컴포넌트</h2>
+      <div class="comps">
+        <div class="comp-row"><button class="btn primary" type="button">예약 요청</button><button class="btn" type="button">코스 보기</button><button class="btn primary" type="button" disabled>마감</button></div>
+        <div class="comp-row"><button class="chip" type="button" aria-pressed="true">오후</button><button class="chip" type="button" aria-pressed="false">오전</button><button class="chip" type="button" aria-pressed="false">아이 동반</button></div>
+        <div class="comp-row"><span class="pill ok">여유</span><span class="pill few">마감 임박</span><span class="pill full">마감</span><span class="seal">동원</span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="phone-wrap">
+    <span class="label">06 · Main screen · 예약 홈</span>
+    <div class="phone">
+      <div class="app">
+        <div class="app-top">
+          <h3><span class="seal">동원</span>동원농원</h3>
+          <span class="mono">11.12 THU</span>
+        </div>
+        <div class="peak">
+          <b>추사고택 은행나무, 지금 절정</b>
+          <span>농원에서 차로 3분 · 오후 3~4시가 가장 반짝여요</span>
+        </div>
+        <div class="blk">
+          <div class="blk-h"><h4>방문 날짜</h4><small>11월 · 예시 일정</small></div>
+          <div class="dates" id="dates"></div>
+        </div>
+        <div class="blk">
+          <div class="blk-h"><h4>시간</h4><small id="slotsub"></small></div>
+          <div class="slots" id="slots"></div>
+        </div>
+        <div class="blk">
+          <div class="people">
+            <span>인원</span>
+            <div class="stepper"><button type="button" id="minus" aria-label="인원 줄이기">−</button><span class="mono" id="cnt">2</span><button type="button" id="plus" aria-label="인원 늘리기">+</button></div>
+          </div>
+        </div>
+        <div class="course">
+          <div class="min">03<small>분</small></div>
+          <div><b style="font-weight:400">추사고택 가을 반나절 코스</b><p>예약 시간에 맞춰 은행나무 아래 다녀오는 순서를 함께 보내드려요.</p></div>
+        </div>
+      </div>
+      <div class="cta">
+        <div class="sum mono" id="sum"></div>
+        <button class="btn primary" type="button" id="book">예약 요청</button>
+        <div class="toast" id="toast" hidden></div>
+      </div>
+    </div>
+    <p class="note">날짜별 남은 자리는 화면 확인용 예시예요.</p>
+  </div>
+</div>
+
+<script>
+const W=['일','월','화','수','목','금','토'];
+// 예시 일정: 2026-11-12(목)부터 7일, 일요일은 마감
+const days=[];for(let i=0;i<7;i++){const d=new Date(2026,10,12+i);days.push(d);}
+const state={day:1,slot:'14:00',n:2};
+const avail=i=>{const wd=days[i].getDay();if(wd===0)return'full';if(wd===6)return'few';return'ok';};
+const slotsFor=i=>{const a=avail(i);return[
+  {t:'10:00',k:'오전 방문',s:'은행나무는 그늘이 많은 시간',left:a==='few'?1:3},
+  {t:'14:00',k:'오후 방문 · 추천',s:'15시 은행잎 시간에 맞춰 출발',left:a==='few'?0:2},
+  {t:'16:30',k:'해질녘 방문',s:'노을과 함께 짧게',left:a==='few'?2:4}];};
+const $=id=>document.getElementById(id);
+function render(){
+  $('dates').innerHTML=days.map((d,i)=>{const a=avail(i);const wd=d.getDay();
+    return `<button type="button" class="date ${a} ${wd===0?'sun':''}" data-i="${i}" aria-pressed="${state.day===i}" ${a==='full'?'disabled':''} aria-label="${d.getMonth()+1}월 ${d.getDate()}일 ${W[wd]}요일 ${a==='full'?'마감':a==='few'?'마감 임박':'여유'}"><span class="w">${W[wd]}</span><span class="d">${d.getDate()}</span><span class="dot"></span></button>`}).join('');
+  const ss=slotsFor(state.day);
+  if(!ss.find(s=>s.t===state.slot&&s.left>0)){const f=ss.find(s=>s.left>0);state.slot=f?f.t:null;}
+  $('slotsub').textContent=avail(state.day)==='few'?'마감 임박':'남은 자리';
+  $('slots').innerHTML=ss.map(s=>`<button type="button" class="slot" data-t="${s.t}" aria-pressed="${state.slot===s.t}" ${s.left?'':'disabled'}><span class="mono">${s.t}</span><span>${s.k}<small>${s.s}</small></span>${s.left?`<span class="pill ${s.left<=1?'few':'ok'}">${s.left}팀</span>`:'<span class="pill full">마감</span>'}</button>`).join('');
+  $('cnt').textContent=state.n;$('minus').disabled=state.n<=1;$('plus').disabled=state.n>=8;
+  const d=days[state.day];
+  $('sum').textContent=`${d.getMonth()+1}.${d.getDate()} ${W[d.getDay()]} · ${state.slot||'시간 선택'} · ${state.n}명`;
+  $('book').disabled=!state.slot;$('toast').hidden=true;
+}
+$('dates').onclick=e=>{const b=e.target.closest('.date');if(!b||b.disabled)return;state.day=+b.dataset.i;render();};
+$('slots').onclick=e=>{const b=e.target.closest('.slot');if(!b||b.disabled)return;state.slot=b.dataset.t;render();};
+$('minus').onclick=()=>{if(state.n>1){state.n--;render();}};
+$('plus').onclick=()=>{if(state.n<8){state.n++;render();}};
+$('book').onclick=()=>{const t=$('toast');t.textContent=`${$('sum').textContent} 예약 요청을 만들었어요. 화면 예시라 실제로 접수되지는 않아요.`;t.hidden=false;};
+render();
+</script>
