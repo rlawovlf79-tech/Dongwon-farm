@@ -1,5 +1,7 @@
 <title>동원농원 디자인 시스템</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#F3F4F1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131411" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Song+Myung&family=Gowun+Dodum&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -21,6 +23,7 @@
   --paper:#131411; --paper-2:#1C1D19; --ink:#ECEBE3; --ink-2:#A3A59A; --line:#2E302A;
   --ginkgo:#EEB000; --ginkgo-soft:#3A3114; --on-ginkgo:#1D1E1A; --seal:#CF4338; --pine:#6FA07F; --on-ink:#131411; color-scheme:dark}
 *{box-sizing:border-box}
+a,button,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
 body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.7;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -245,7 +248,7 @@ p{margin:0}
       <div class="app">
         <div class="app-top">
           <h3><span class="seal">동원</span>동원농원</h3>
-          <span class="mono">11.12 THU</span>
+          <span class="mono" id="today"></span>
         </div>
         <div class="peak">
           <b>추사고택 은행나무, 지금 절정</b>
@@ -262,7 +265,7 @@ p{margin:0}
         <div class="blk">
           <div class="people">
             <span>인원</span>
-            <div class="stepper"><button type="button" id="minus" aria-label="인원 줄이기">−</button><span class="mono" id="cnt">2</span><button type="button" id="plus" aria-label="인원 늘리기">+</button></div>
+            <div class="stepper"><button type="button" id="minus" aria-label="인원 줄이기">−</button><span class="mono" id="cnt" aria-live="polite">2</span><button type="button" id="plus" aria-label="인원 늘리기">+</button></div>
           </div>
         </div>
         <div class="course">
@@ -273,7 +276,7 @@ p{margin:0}
       <div class="cta">
         <div class="sum mono" id="sum"></div>
         <button class="btn primary" type="button" id="book">예약 요청</button>
-        <div class="toast" id="toast" hidden></div>
+        <div role="status" aria-live="polite"><div class="toast" id="toast" hidden></div></div>
       </div>
     </div>
     <p class="note">날짜별 남은 자리는 화면 확인용 예시예요.</p>
@@ -282,6 +285,8 @@ p{margin:0}
 
 <script>
 const W=['일','월','화','수','목','금','토'];
+const fmt=new Intl.DateTimeFormat('ko-KR',{month:'numeric',day:'numeric',weekday:'short'});
+document.getElementById('today').textContent=fmt.format(new Date(2026,10,12));
 // 예시 일정: 2026-11-12(목)부터 7일, 일요일은 마감
 const days=[];for(let i=0;i<7;i++){const d=new Date(2026,10,12+i);days.push(d);}
 const state={day:1,slot:'14:00',n:2};
@@ -300,7 +305,7 @@ function render(){
   $('slots').innerHTML=ss.map(s=>`<button type="button" class="slot" data-t="${s.t}" aria-pressed="${state.slot===s.t}" ${s.left?'':'disabled'}><span class="mono">${s.t}</span><span>${s.k}<small>${s.s}</small></span>${s.left?`<span class="pill ${s.left<=1?'few':'ok'}">${s.left}팀</span>`:'<span class="pill full">마감</span>'}</button>`).join('');
   $('cnt').textContent=state.n;$('minus').disabled=state.n<=1;$('plus').disabled=state.n>=8;
   const d=days[state.day];
-  $('sum').textContent=`${d.getMonth()+1}.${d.getDate()} ${W[d.getDay()]} · ${state.slot||'시간 선택'} · ${state.n}명`;
+  $('sum').textContent=`${fmt.format(d)} · ${state.slot||'시간 선택'} · ${state.n}명`;
   $('book').disabled=!state.slot;$('toast').hidden=true;
 }
 $('dates').onclick=e=>{const b=e.target.closest('.date');if(!b||b.disabled)return;state.day=+b.dataset.i;render();};
