@@ -188,7 +188,7 @@ def end_card(t):
         d = ImageDraw.Draw(sub)
         dy = int((1 - p) * 50)
         d.rounded_rectangle((150, 1230 + dy, W - 150, 1390 + dy), radius=80, fill=(255, 255, 255, 255))
-        d.text((W / 2, 1312 + dy), "010-3472-9110", font=font(F_TITLE, 92), fill=RED, anchor="mm")
+        d.text((W / 2, 1312 + dy), "010-3473-9110", font=font(F_TITLE, 92), fill=RED, anchor="mm")
         d.text((W / 2, 1480 + dy), "주문 · 문의는 DM 또는 전화로", font=font(F_BODY, 48), fill=(255, 255, 255), anchor="mm")
         layer.alpha_composite(fade(sub, p))
     p = show(1.1)
