@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>동원농원</title>
+<meta name="description" content="동원농원은 과수 묘목을 기르고 제철 과일을 나누는 가족 농원입니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F5F7F2;
+    --pine: #24452F;
+    --soil: #4A3527;
+    --shoot: #A8C66C;
+    --shoot-soft: #DCE8C4;
+    --persimmon: #E3892B;
+    --line: #CBD3C4;
+    --muted: #5E6B5F;
+    --serif: "Gowun Batang", serif;
+    --sans: "Gowun Dodum", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--soil);
+    font-family: var(--sans);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    word-break: keep-all;
+  }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--persimmon); outline-offset: 3px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* 상단 */
+  header.top { display: flex; justify-content: space-between; align-items: baseline; padding: 28px 0; }
+  .brand { font-family: var(--serif); font-weight: 700; font-size: 1.25rem; color: var(--pine); text-decoration: none; }
+  nav ul { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
+  nav a { text-decoration: none; color: var(--muted); }
+  nav a:hover { color: var(--pine); }
+
+  /* 첫 화면 */
+  .hero { padding: 56px 0 72px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: end; }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 700;
+    color: var(--pine);
+    font-size: clamp(3.5rem, 11vw, 8.5rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin: 0;
+  }
+  .hero p.lead { font-family: var(--serif); font-size: 1.375rem; line-height: 1.6; margin: 28px 0 0; max-width: 22em; }
+  .now {
+    border-left: 4px solid var(--persimmon);
+    padding: 4px 0 4px 20px;
+  }
+  .now h2 { font-family: var(--serif); font-size: 1.125rem; margin: 0 0 6px; color: var(--pine); }
+  .now p { margin: 0; color: var(--soil); }
+  .now .actions { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-block; padding: 10px 20px; border-radius: 999px;
+    text-decoration: none; font-weight: 700; border: 2px solid var(--pine);
+  }
+  .btn.solid { background: var(--pine); color: var(--paper); }
+  .btn.solid:hover { background: var(--soil); border-color: var(--soil); }
+  .btn.ghost { color: var(--pine); }
+  .btn.ghost:hover { background: var(--shoot-soft); }
+
+  /* 농원의 일 년 */
+  section { padding: 72px 0; border-top: 1px solid var(--line); }
+  section > .wrap > h2 { font-family: var(--serif); color: var(--pine); font-size: 2rem; line-height: 1.3; margin: 0 0 12px; }
+  .intro { max-width: 36em; margin: 0 0 36px; color: var(--muted); }
+
+  .calendar { overflow-x: auto; }
+  table.year { width: 100%; min-width: 720px; border-collapse: collapse; }
+  .year th, .year td { padding: 0; text-align: center; font-weight: 400; }
+  .year thead th { font-size: 0.875rem; color: var(--muted); padding-bottom: 10px; }
+  .year thead th.is-now { color: var(--persimmon); font-weight: 700; }
+  .year tbody th {
+    text-align: left; font-family: var(--serif); font-weight: 700; color: var(--pine);
+    white-space: nowrap; padding: 10px 20px 10px 0; width: 7.5em;
+  }
+  .year tbody th, .year thead th:first-child {
+    position: sticky; left: 0; z-index: 1; background: var(--paper);
+  }
+  .year td { height: 44px; position: relative; border-left: 1px dashed var(--line); }
+  .year td.is-now { background: rgba(227,137,43,0.10); }
+  .year td span { position: absolute; left: 0; right: 0; top: 12px; height: 20px; }
+  .year td span.plant { background: var(--shoot); }
+  .year td span.harvest { background: var(--pine); }
+  .year td span.start { border-radius: 10px 0 0 10px; left: 4px; }
+  .year td span.end { border-radius: 0 10px 10px 0; right: 4px; }
+  .legend { display: flex; gap: 24px; margin-top: 20px; font-size: 0.9375rem; color: var(--muted); }
+  .legend i { display: inline-block; width: 28px; height: 12px; border-radius: 6px; vertical-align: middle; margin-right: 8px; }
+
+  /* 기르는 것들 */
+  .grow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 48px; list-style: none; padding: 0; margin: 0; }
+  .grow li { border-top: 2px solid var(--pine); padding-top: 16px; }
+  .grow h3 { font-family: var(--serif); font-size: 1.375rem; color: var(--pine); margin: 0 0 6px; }
+  .grow p { margin: 0; }
+  .grow .note { display: block; margin-top: 8px; font-size: 0.9375rem; color: var(--muted); }
+
+  /* 찾아오시는 길 */
+  .visit { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+  .visit dl { margin: 0; display: grid; grid-template-columns: 6em 1fr; row-gap: 14px; }
+  .visit dt { font-family: var(--serif); font-weight: 700; color: var(--pine); }
+  .visit dd { margin: 0; }
+  .visit .tel { font-family: var(--serif); font-size: 1.75rem; color: var(--pine); text-decoration: none; font-weight: 700; }
+  .order { background: var(--pine); color: var(--paper); padding: 32px; border-radius: 4px 40px 4px 40px; }
+  .order h3 { font-family: var(--serif); font-size: 1.5rem; margin: 0 0 12px; }
+  .order ol { margin: 0; padding-left: 1.25em; }
+  .order li + li { margin-top: 8px; }
+
+  footer { padding: 40px 0 56px; color: var(--muted); font-size: 0.9375rem; border-top: 1px solid var(--line); }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; gap: 36px; padding-top: 24px; }
+    .grow { grid-template-columns: 1fr 1fr; }
+    .visit { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 0 16px; }
+    nav ul { gap: 16px; font-size: 0.9375rem; }
+    header.top { flex-direction: column; gap: 8px; }
+    .grow { grid-template-columns: 1fr; }
+    section { padding: 56px 0; }
+    .hero p.lead { font-size: 1.1875rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#">동원농원</a>
+    <nav aria-label="주요 메뉴">
+      <ul>
+        <li><a href="#year">농원의 일 년</a></li>
+        <li><a href="#grow">기르는 것들</a></li>
+        <li><a href="#visit">찾아오시는 길</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h1>동원농원</h1>
+      <p class="lead">묘목을 기르고, 제철 과일을 나눕니다.<br>심을 때와 거둘 때를 알려드리는 가족 농원입니다.</p>
+    </div>
+    <div class="now" aria-live="polite">
+      <h2 id="now-title">이번 달 농원에서는</h2>
+      <p id="now-text">감 수확이 한창이고, 가을 묘목 심기를 시작합니다.</p>
+      <div class="actions">
+        <a class="btn solid" href="tel:010-0000-0000">전화로 문의하기</a>
+        <a class="btn ghost" href="#visit">농원 방문 안내</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="year">
+  <div class="wrap">
+    <h2>농원의 일 년</h2>
+    <p class="intro">묘목은 봄과 가을에 심고, 과일은 철마다 거둡니다. 주황색 칸이 이번 달입니다.</p>
+    <div class="calendar" tabindex="0" aria-label="월별 심기와 수확 시기 표">
+      <table class="year" id="year-table">
+        <caption class="sr-only" style="position:absolute;left:-9999px">작물별 심는 때와 거두는 때</caption>
+        <thead><tr><th scope="col"><span style="position:absolute;left:-9999px">작물</span></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--shoot)"></i>심는 때</span>
+      <span><i style="background:var(--pine)"></i>거두는 때</span>
+    </div>
+  </div>
+</section>
+
+<section id="grow">
+  <div class="wrap">
+    <h2>기르는 것들</h2>
+    <p class="intro">모든 묘목은 농원 밭에서 2~3년 키워 뿌리가 튼튼해진 뒤에 내보냅니다.</p>
+    <ul class="grow">
+      <li><h3>사과</h3><p>부사, 홍로 묘목과 가을 사과.</p><span class="note">묘목은 3월과 11월, 과일은 9~11월</span></li>
+      <li><h3>배</h3><p>신고배 묘목과 햇배.</p><span class="note">묘목은 3월과 11월, 과일은 9~10월</span></li>
+      <li><h3>감</h3><p>대봉, 단감 묘목. 곶감용 대봉도 냅니다.</p><span class="note">묘목은 3~4월, 과일은 10~11월</span></li>
+      <li><h3>블루베리</h3><p>화분 묘목과 생과.</p><span class="note">묘목은 3~4월, 과일은 6~7월</span></li>
+      <li><h3>매실</h3><p>청매실 묘목과 매실청용 생매실.</p><span class="note">묘목은 3월, 과일은 6월</span></li>
+      <li><h3>대추</h3><p>복조 대추 묘목과 생대추.</p><span class="note">묘목은 4월, 과일은 9~10월</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="visit">
+  <div class="wrap">
+    <h2>찾아오시는 길</h2>
+    <div class="visit">
+      <div>
+        <dl>
+          <dt>전화</dt><dd><a class="tel" href="tel:010-0000-0000">010-0000-0000</a></dd>
+          <dt>주소</dt><dd>○○도 ○○군 ○○면 ○○길 00</dd>
+          <dt>여는 시간</dt><dd>매일 오전 8시 ~ 오후 6시<br>비 오는 날과 명절에는 쉽니다.</dd>
+          <dt>주차</dt><dd>농원 앞마당에 10대 정도 세울 수 있습니다.</dd>
+        </dl>
+      </div>
+      <div class="order">
+        <h3>묘목 주문하는 법</h3>
+        <ol>
+          <li>전화나 문자로 품종과 그루 수를 알려주세요.</li>
+          <li>심을 곳의 흙과 햇빛을 여쭤보고 맞는 품종을 권해드립니다.</li>
+          <li>직접 가져가시거나, 택배로 보내드립니다.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 동원농원</div>
+</footer>
+
+<script>
+  // 작물별 심는 달(plant)과 거두는 달(harvest). 1 = 1월
+  const crops = [
+    { name: "사과",     plant: [3, 11],    harvest: [9, 10, 11] },
+    { name: "배",       plant: [3, 11],    harvest: [9, 10] },
+    { name: "감",       plant: [3, 4],     harvest: [10, 11] },
+    { name: "블루베리", plant: [3, 4],     harvest: [6, 7] },
+    { name: "매실",     plant: [3],        harvest: [6] },
+    { name: "대추",     plant: [4],        harvest: [9, 10] },
+  ];
+  const now = new Date().getMonth() + 1;
+
+  const headRow = document.querySelector("#year-table thead tr");
+  for (let m = 1; m <= 12; m++) {
+    const th = document.createElement("th");
+    th.scope = "col";
+    th.textContent = m + "월";
+    if (m === now) th.className = "is-now";
+    headRow.appendChild(th);
+  }
+
+  const tbody = document.querySelector("#year-table tbody");
+  for (const c of crops) {
+    const tr = document.createElement("tr");
+    const th = document.createElement("th");
+    th.scope = "row";
+    th.textContent = c.name;
+    tr.appendChild(th);
+    for (let m = 1; m <= 12; m++) {
+      const td = document.createElement("td");
+      if (m === now) td.className = "is-now";
+      const kind = c.harvest.includes(m) ? "harvest" : c.plant.includes(m) ? "plant" : null;
+      if (kind) {
+        const set = kind === "harvest" ? c.harvest : c.plant;
+        const span = document.createElement("span");
+        span.className = kind;
+        if (!set.includes(m - 1)) span.classList.add("start");
+        if (!set.includes(m + 1)) span.classList.add("end");
+        td.appendChild(span);
+        td.setAttribute("aria-label", c.name + " " + m + "월 " + (kind === "harvest" ? "수확" : "심기"));
+      }
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  }
+
+  // 좁은 화면에서는 표를 이번 달 근처로 옮겨 보여줍니다
+  const cal = document.querySelector(".calendar");
+  const nowCol = headRow.querySelector(".is-now");
+  if (cal.scrollWidth > cal.clientWidth && nowCol) {
+    cal.scrollLeft = nowCol.offsetLeft - cal.clientWidth / 2 + nowCol.offsetWidth / 2;
+  }
+
+  // 이번 달 안내 문구
+  const harvesting = crops.filter(c => c.harvest.includes(now)).map(c => c.name);
+  const planting = crops.filter(c => c.plant.includes(now)).map(c => c.name);
+  const parts = [];
+  if (harvesting.length) parts.push(harvesting.join(", ") + " 수확이 한창입니다");
+  if (planting.length) parts.push(planting.join(", ") + " 묘목을 심기 좋은 때입니다");
+  document.getElementById("now-title").textContent = now + "월, 농원에서는";
+  document.getElementById("now-text").textContent = parts.length
+    ? parts.join(". ") + "."
+    : "나무들이 쉬는 달입니다. 봄 묘목 예약을 받고 있습니다.";
+</script>
+</body>
+</html>
